@@ -71,7 +71,7 @@ def _get_experiment_type(mode, project_name):
 
 def _create_experiment(args):
     """Ensures that the experiment object is only created in a single process during distributed training."""
-    if RANK not in {-1, 0}:
+    if RANK not in (-1, 0):
         return
     try:
         comet_mode = _get_comet_mode()
@@ -105,7 +105,12 @@ def _fetch_trainer_metadata(trainer):
     save_interval = curr_epoch % save_period == 0
     save_assets = save and save_period > 0 and save_interval and not final_epoch
 
-    return dict(curr_epoch=curr_epoch, curr_step=curr_step, save_assets=save_assets, final_epoch=final_epoch)
+    return dict(
+        curr_epoch=curr_epoch,
+        curr_step=curr_step,
+        save_assets=save_assets,
+        final_epoch=final_epoch,
+    )
 
 
 def _scale_bounding_box_to_original_image_shape(box, resized_image_shape, original_image_shape, ratio_pad):
@@ -114,6 +119,7 @@ def _scale_bounding_box_to_original_image_shape(box, resized_image_shape, origin
 
     This function rescales the bounding box labels to the original image shape.
     """
+
     resized_image_height, resized_image_width = resized_image_shape
 
     # Convert normalized xywh format predictions to xyxy in resized scale format
@@ -212,7 +218,11 @@ def _log_confusion_matrix(experiment, trainer, curr_step, curr_epoch):
     conf_mat = trainer.validator.confusion_matrix.matrix
     names = list(trainer.data["names"].values()) + ["background"]
     experiment.log_confusion_matrix(
-        matrix=conf_mat, labels=names, max_categories=len(names), epoch=curr_epoch, step=curr_step
+        matrix=conf_mat,
+        labels=names,
+        max_categories=len(names),
+        epoch=curr_epoch,
+        step=curr_step,
     )
 
 
@@ -284,7 +294,12 @@ def _log_plots(experiment, trainer):
 def _log_model(experiment, trainer):
     """Log the best-trained model to Comet.ml."""
     model_name = _get_comet_model_name()
-    experiment.log_model(model_name, file_or_folder=str(trainer.best), file_name="best.pt", overwrite=True)
+    experiment.log_model(
+        model_name,
+        file_or_folder=str(trainer.best),
+        file_name="best.pt",
+        overwrite=True,
+    )
 
 
 def on_pretrain_routine_start(trainer):
@@ -305,7 +320,11 @@ def on_train_epoch_end(trainer):
     curr_epoch = metadata["curr_epoch"]
     curr_step = metadata["curr_step"]
 
-    experiment.log_metrics(trainer.label_loss_items(trainer.tloss, prefix="train"), step=curr_step, epoch=curr_epoch)
+    experiment.log_metrics(
+        trainer.label_loss_items(trainer.tloss, prefix="train"),
+        step=curr_step,
+        epoch=curr_epoch,
+    )
 
     if curr_epoch == 1:
         _log_images(experiment, trainer.save_dir.glob("train_batch*.jpg"), curr_step)

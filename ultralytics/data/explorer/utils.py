@@ -5,6 +5,7 @@ from typing import List
 
 import cv2
 import numpy as np
+import pandas as pd
 
 from ultralytics.data.augment import LetterBox
 from ultralytics.utils import LOGGER as logger
@@ -63,10 +64,8 @@ def plot_query_result(similar_set, plot_labels=True):
         similar_set (list): Pyarrow or pandas object containing the similar data points
         plot_labels (bool): Whether to plot labels or not
     """
-    import pandas  # scope for faster 'import ultralytics'
-
     similar_set = (
-        similar_set.to_dict(orient="list") if isinstance(similar_set, pandas.DataFrame) else similar_set.to_pydict()
+        similar_set.to_dict(orient="list") if isinstance(similar_set, pd.DataFrame) else similar_set.to_pydict()
     )
     empty_masks = [[[]]]
     empty_boxes = [[]]
@@ -99,9 +98,9 @@ def plot_query_result(similar_set, plot_labels=True):
                 plot_kpts.append(kpt)
         batch_idx.append(np.ones(len(np.array(bboxes[i], dtype=np.float32))) * i)
     imgs = np.stack(imgs, axis=0)
-    masks = np.stack(plot_masks, axis=0) if plot_masks else np.zeros(0, dtype=np.uint8)
-    kpts = np.concatenate(plot_kpts, axis=0) if plot_kpts else np.zeros((0, 51), dtype=np.float32)
-    boxes = xyxy2xywh(np.concatenate(plot_boxes, axis=0)) if plot_boxes else np.zeros(0, dtype=np.float32)
+    masks = np.stack(plot_masks, axis=0) if len(plot_masks) > 0 else np.zeros(0, dtype=np.uint8)
+    kpts = np.concatenate(plot_kpts, axis=0) if len(plot_kpts) > 0 else np.zeros((0, 51), dtype=np.float32)
+    boxes = xyxy2xywh(np.concatenate(plot_boxes, axis=0)) if len(plot_boxes) > 0 else np.zeros(0, dtype=np.float32)
     batch_idx = np.concatenate(batch_idx, axis=0)
     cls = np.concatenate([np.array(c, dtype=np.int32) for c in cls], axis=0)
 
