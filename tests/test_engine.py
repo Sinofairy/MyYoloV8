@@ -3,21 +3,22 @@
 import sys
 from unittest import mock
 
-from tests import MODEL
 from ultralytics import YOLO
 from ultralytics.cfg import get_cfg
 from ultralytics.engine.exporter import Exporter
 from ultralytics.models.yolo import classify, detect, segment
 from ultralytics.utils import ASSETS, DEFAULT_CFG, WEIGHTS_DIR
 
+from . import MODEL
+
 
 def test_func(*args):  # noqa
-    """Test function callback for evaluating YOLO model performance metrics."""
+    """Test function callback."""
     print("callback test passed")
 
 
 def test_export():
-    """Tests the model exporting function by adding a callback and asserting its execution."""
+    """Test model exporting functionality."""
     exporter = Exporter()
     exporter.add_callback("on_export_start", test_func)
     assert test_func in exporter.callbacks["on_export_start"], "callback test failed"
@@ -26,7 +27,7 @@ def test_export():
 
 
 def test_detect():
-    """Test YOLO object detection training, validation, and prediction functionality."""
+    """Test object detection functionality."""
     overrides = {"data": "coco8.yaml", "model": "yolov8n.yaml", "imgsz": 32, "epochs": 1, "save": False}
     cfg = get_cfg(DEFAULT_CFG)
     cfg.data = "coco8.yaml"
@@ -65,7 +66,7 @@ def test_detect():
 
 
 def test_segment():
-    """Tests image segmentation training, validation, and prediction pipelines using YOLO models."""
+    """Test image segmentation functionality."""
     overrides = {"data": "coco8-seg.yaml", "model": "yolov8n-seg.yaml", "imgsz": 32, "epochs": 1, "save": False}
     cfg = get_cfg(DEFAULT_CFG)
     cfg.data = "coco8-seg.yaml"
@@ -104,7 +105,7 @@ def test_segment():
 
 
 def test_classify():
-    """Test image classification including training, validation, and prediction phases."""
+    """Test image classification functionality."""
     overrides = {"data": "imagenet10", "model": "yolov8n-cls.yaml", "imgsz": 32, "epochs": 1, "save": False}
     cfg = get_cfg(DEFAULT_CFG)
     cfg.data = "imagenet10"

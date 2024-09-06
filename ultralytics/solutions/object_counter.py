@@ -17,7 +17,7 @@ class ObjectCounter:
 
     def __init__(
         self,
-        names,
+        classes_names,
         reg_pts=None,
         count_reg_color=(255, 0, 255),
         count_txt_color=(0, 0, 0),
@@ -37,7 +37,7 @@ class ObjectCounter:
         Initializes the ObjectCounter with various tracking and counting parameters.
 
         Args:
-            names (dict): Dictionary of class names.
+            classes_names (dict): Dictionary of class names.
             reg_pts (list): List of points defining the counting region.
             count_reg_color (tuple): RGB color of the counting region.
             count_txt_color (tuple): RGB color of the count text.
@@ -53,6 +53,7 @@ class ObjectCounter:
             line_dist_thresh (int): Euclidean distance threshold for line counter.
             cls_txtdisplay_gap (int): Display gap between each class count.
         """
+
         # Mouse events
         self.is_drawing = False
         self.selected_point = None
@@ -71,7 +72,7 @@ class ObjectCounter:
         self.view_in_counts = view_in_counts
         self.view_out_counts = view_out_counts
 
-        self.names = names  # Classes names
+        self.names = classes_names  # Classes names
         self.annotator = None  # Annotator
         self.window_name = "Ultralytics YOLOv8 Object Counter"
 
@@ -140,6 +141,7 @@ class ObjectCounter:
 
     def extract_and_process_tracks(self, tracks):
         """Extracts and processes tracks for object counting in a video stream."""
+
         # Annotator Init and region drawing
         self.annotator = Annotator(self.im0, self.tf, self.names)
 
@@ -170,7 +172,7 @@ class ObjectCounter:
                 if self.draw_tracks:
                     self.annotator.draw_centroid_and_tracks(
                         track_line,
-                        color=self.track_color or colors(int(track_id), True),
+                        color=self.track_color if self.track_color else colors(int(track_id), True),
                         track_thickness=self.track_thickness,
                     )
 

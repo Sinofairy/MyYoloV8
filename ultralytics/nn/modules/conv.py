@@ -158,7 +158,9 @@ class GhostConv(nn.Module):
     """Ghost Convolution https://github.com/huawei-noah/ghostnet."""
 
     def __init__(self, c1, c2, k=1, s=1, g=1, act=True):
-        """Initializes Ghost Convolution module with primary and cheap operations for efficient feature learning."""
+        """Initializes the GhostConv object with input channels, output channels, kernel size, stride, groups and
+        activation.
+        """
         super().__init__()
         c_ = c2 // 2  # hidden channels
         self.cv1 = Conv(c1, c_, k, s, None, g, act=act)
@@ -329,3 +331,42 @@ class Concat(nn.Module):
     def forward(self, x):
         """Forward pass for the YOLOv8 mask Proto module."""
         return torch.cat(x, self.d)
+
+class ResBlock_CBAM(nn.Module):
+    def __init__(self, in_places, places, stride=1, downsampling=False, expansion=1):
+        super(ResBlock_CBAM, self).__init__()
+        self.expansion = expansion
+        self.downsampling = downsampling
+
+        self.bottleneck = nn.Sequential(
+            nn.Conv2d(in_channels=in_places, out_channels=places, kernel_size=1, stride=1, bias=False),
+            nn.BatchNorm2d(places),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(in_channels=places, out_channels=places, kernel_size=3, stride=stride, padding=1, bias=False),
+            nn.BatchNorm2d(places),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(in_channels=places, out_channels=places * self.expansion, kernel_size=1, stride=1,
+                      bias=False),
+            nn.BatchNorm2d(places * self.expansion),
+        )
+        # self.cbam = CBAM(c1=places * self.expansion, c2=places * self.expansion, )
+        self.cbam = CBAM(c1=places * self.expansion)
+
+        if self.downsampling:
+            self.downsample = nn.Sequential(
+                nn.Conv2d(in_channels=in_places, out_channels=places * self.expansion, kernel_size=1, stride=stride,
+                          bias=False),
+                nn.BatchNorm2d(places * self.expansion)
+            )
+        self.relu = nn.ReLU(inplace=True)
+
+    def forward(self, x):
+        residual = x
+        out = self.bottleneck(x)
+        out = self.cbam(out)
+        if self.downsampling:
+            residual = self.downsample(x)
+
+        out += residual
+        out = self.relu(out)
+        return out

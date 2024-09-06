@@ -1,7 +1,7 @@
 ---
 comments: true
-description: Learn how to load YOLOv5 from PyTorch Hub for seamless model inference and customization. Follow our step-by-step guide at Ultralytics Docs.
-keywords: YOLOv5, PyTorch Hub, model loading, Ultralytics, object detection, machine learning, AI, tutorial, inference
+description: Detailed guide on loading YOLOv5 from PyTorch Hub. Includes examples & tips on inference settings, multi-GPU inference, training and more.
+keywords: Ultralytics, YOLOv5, PyTorch, loading YOLOv5, PyTorch Hub, inference, multi-GPU inference, training
 ---
 
 📚 This guide explains how to load YOLOv5 🚀 from PyTorch Hub at [https://pytorch.org/hub/ultralytics_yolov5](https://pytorch.org/hub/ultralytics_yolov5).
@@ -76,8 +76,8 @@ results.pandas().xyxy[0]  # im1 predictions (pandas)
 # 3  986.00  304.00  1028.0  420.0    0.286865     27     tie
 ```
 
-<img src="https://github.com/ultralytics/docs/releases/download/0/yolo-inference-results-zidane.avif" width="500" alt="YOLO inference results on zidane.jpg">
-<img src="https://github.com/ultralytics/docs/releases/download/0/yolo-inference-results-on-bus.avif" width="300" alt="YOLO inference results on bus.jpg">
+<img src="https://user-images.githubusercontent.com/26833433/124915064-62a49e00-dff1-11eb-86b3-a85b97061afb.jpg" width="500" alt="YOLO inference results on zidane.jpg">
+<img src="https://user-images.githubusercontent.com/26833433/124915055-60424400-dff1-11eb-9055-24585b375a29.jpg" width="300" alt="YOLO inference results on bus.jpg">
 
 For all inference options see YOLOv5 `AutoShape()` forward [method](https://github.com/ultralytics/yolov5/blob/30e4c4f09297b67afedf8b2bcd851833ddc9dead/models/common.py#L243-L252).
 
@@ -285,42 +285,42 @@ results.pandas().xyxy[0].to_json(orient="records")  # JSON img1 predictions
 
 ```json
 [
-    {
-        "xmin": 749.5,
-        "ymin": 43.5,
-        "xmax": 1148.0,
-        "ymax": 704.5,
-        "confidence": 0.8740234375,
-        "class": 0,
-        "name": "person"
-    },
-    {
-        "xmin": 433.5,
-        "ymin": 433.5,
-        "xmax": 517.5,
-        "ymax": 714.5,
-        "confidence": 0.6879882812,
-        "class": 27,
-        "name": "tie"
-    },
-    {
-        "xmin": 115.25,
-        "ymin": 195.75,
-        "xmax": 1096.0,
-        "ymax": 708.0,
-        "confidence": 0.6254882812,
-        "class": 0,
-        "name": "person"
-    },
-    {
-        "xmin": 986.0,
-        "ymin": 304.0,
-        "xmax": 1028.0,
-        "ymax": 420.0,
-        "confidence": 0.2873535156,
-        "class": 27,
-        "name": "tie"
-    }
+  {
+    "xmin": 749.5,
+    "ymin": 43.5,
+    "xmax": 1148.0,
+    "ymax": 704.5,
+    "confidence": 0.8740234375,
+    "class": 0,
+    "name": "person"
+  },
+  {
+    "xmin": 433.5,
+    "ymin": 433.5,
+    "xmax": 517.5,
+    "ymax": 714.5,
+    "confidence": 0.6879882812,
+    "class": 27,
+    "name": "tie"
+  },
+  {
+    "xmin": 115.25,
+    "ymin": 195.75,
+    "xmax": 1096.0,
+    "ymax": 708.0,
+    "confidence": 0.6254882812,
+    "class": 0,
+    "name": "person"
+  },
+  {
+    "xmin": 986.0,
+    "ymin": 304.0,
+    "xmax": 1028.0,
+    "ymax": 420.0,
+    "confidence": 0.2873535156,
+    "class": 27,
+    "name": "tie"
+  }
 ]
 ```
 

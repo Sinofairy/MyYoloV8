@@ -3,7 +3,7 @@
 import shutil
 from pathlib import Path
 
-from tests import TMP
+TMP = Path(__file__).resolve().parent / "tmp"  # temp directory for test files
 
 
 def pytest_addoption(parser):
@@ -11,24 +11,18 @@ def pytest_addoption(parser):
     Add custom command-line options to pytest.
 
     Args:
-        parser (pytest.config.Parser): The pytest parser object for adding custom command-line options.
-
-    Returns:
-        (None)
+        parser (pytest.config.Parser): The pytest parser object.
     """
     parser.addoption("--slow", action="store_true", default=False, help="Run slow tests")
 
 
 def pytest_collection_modifyitems(config, items):
     """
-    Modify the list of test items to exclude tests marked as slow if the --slow option is not specified.
+    Modify the list of test items to remove tests marked as slow if the --slow option is not provided.
 
     Args:
-        config (pytest.config.Config): The pytest configuration object that provides access to command-line options.
-        items (list): The list of collected pytest item objects to be modified based on the presence of --slow option.
-
-    Returns:
-        (None) The function modifies the 'items' list in place, and does not return a value.
+        config (pytest.config.Config): The pytest config object.
+        items (list): List of test items to be executed.
     """
     if not config.getoption("--slow"):
         # Remove the item entirely from the list of test items if it's marked as 'slow'
@@ -44,9 +38,6 @@ def pytest_sessionstart(session):
 
     Args:
         session (pytest.Session): The pytest session object.
-
-    Returns:
-        (None)
     """
     from ultralytics.utils.torch_utils import init_seeds
 
@@ -63,12 +54,9 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
     and directories used during testing.
 
     Args:
-        terminalreporter (pytest.terminal.TerminalReporter): The terminal reporter object used for terminal output.
+        terminalreporter (pytest.terminal.TerminalReporter): The terminal reporter object.
         exitstatus (int): The exit status of the test run.
         config (pytest.config.Config): The pytest config object.
-
-    Returns:
-        (None)
     """
     from ultralytics.utils import WEIGHTS_DIR
 
